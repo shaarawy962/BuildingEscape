@@ -10,11 +10,7 @@
 		}
 	],
 	"settings": {
-		"typescript.tsc.autoDetect": "off",
-		"files.associations": {
-			"*.tpp": "cpp"
-		},
-		"terminal.integrated.shell.windows": "cmd.exe"
+		"typescript.tsc.autoDetect": "off"
 	},
 	"extensions": {
 		"recommendations": [
