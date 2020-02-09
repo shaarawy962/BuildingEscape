@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "GrabbingComponent.generated.h"
 
 
@@ -28,7 +29,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 private:
 	float Reach = 100.f;
-		
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+	UActorComponent* InputComponent = nullptr;
 };
