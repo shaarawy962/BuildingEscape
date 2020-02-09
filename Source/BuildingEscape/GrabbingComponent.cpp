@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
 #include "CollisionQueryParams.h"
+#include "Engine/EngineBaseTypes.h"
 
 // Sets default values for this component's properties
 UGrabbingComponent::UGrabbingComponent()
@@ -33,15 +34,21 @@ void UGrabbingComponent::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s is missing physics handle"), *(GetOwner()->GetName()))
 	}
-	InputComponent = GetOwner()->FindComponentByClass<UActorComponent>();
-	if(InputComponent){
+	Input = GetOwner()->FindComponentByClass<UInputComponent>();
+	if(Input){
 		UE_LOG(LogTemp, Display, TEXT("Input is attached to %s"), *(GetOwner()->GetName()))
+		Input->BindAction("Grab", IE_Pressed, this, &UGrabbingComponent::Grab);
 	}
 	else{
 		UE_LOG(LogTemp, Error, TEXT("Input is missing from %s"), *GetOwner()->GetName())
 	}
 	
 	
+}
+
+void UGrabbingComponent::Grab()
+{
+	UE_LOG(LogTemp, Display, TEXT("Grab Pressed"))
 }
 
 
