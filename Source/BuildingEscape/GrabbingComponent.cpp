@@ -38,6 +38,7 @@ void UGrabbingComponent::BeginPlay()
 	if(Input){
 		UE_LOG(LogTemp, Display, TEXT("Input is attached to %s"), *(GetOwner()->GetName()))
 		Input->BindAction("Grab", IE_Pressed, this, &UGrabbingComponent::Grab);
+		Input->BindAction("Grab", IE_Released, this, &UGrabbingComponent::Release);
 	}
 	else{
 		UE_LOG(LogTemp, Error, TEXT("Input is missing from %s"), *GetOwner()->GetName())
@@ -46,9 +47,14 @@ void UGrabbingComponent::BeginPlay()
 	
 }
 
+void UGrabbingComponent::Release()
+{
+	UE_LOG(LogTemp, Display, TEXT("Grab released"))
+}
+
 void UGrabbingComponent::Grab()
 {
-	UE_LOG(LogTemp, Display, TEXT("Grab Pressed"))
+	UE_LOG(LogTemp, Display, TEXT("Grab pressed"))
 }
 
 
