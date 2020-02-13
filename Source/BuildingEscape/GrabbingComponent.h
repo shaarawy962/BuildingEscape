@@ -17,19 +17,21 @@ class BUILDINGESCAPE_API UGrabbingComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UGrabbingComponent();
+	
 	UPROPERTY(EditAnywhere)
 	FRotator PlayerViewPointRotation;
 	FVector PlayerViewPointLocation;
 	FVector* LineTraceDirection;
 	FVector LineTraceEndPoint;
+	
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	float Reach = 100.f;
@@ -37,4 +39,10 @@ private:
 	UInputComponent* Input = nullptr;
 	void Release();
 	void Grab();
+	// Look for (assumed) attached Physics Handle Component
+	void PhysicsHandleComponent();
+	// Look for (assumed) attached input component
+	void FindInputComponent();
+	//Return Hit for the physics body in reach
+	const FHitResult GetFirstBodyInReach();
 };
