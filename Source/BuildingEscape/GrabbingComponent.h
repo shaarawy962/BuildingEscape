@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Components/InputComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "GrabbingComponent.generated.h"
 
 
@@ -37,6 +38,8 @@ private:
 	float Reach = 100.f;
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* Input = nullptr;
+	UPrimitiveComponent* ComponentToGrab = nullptr;
+
 	void Release();
 	void Grab();
 	// Look for (assumed) attached Physics Handle Component

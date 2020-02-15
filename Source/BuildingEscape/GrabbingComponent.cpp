@@ -29,26 +29,45 @@ void UGrabbingComponent::BeginPlay()
 
 void UGrabbingComponent::Release()
 {
+	if (PhysicsHandle)
+	{
+		if (PhysicsHandle->GrabbedComponent)
+		{
+			PhysicsHandle->ReleaseComponent();
+		}
+	}
+
+
 	UE_LOG(LogTemp, Display, TEXT("Grab released"))
 }
 
 void UGrabbingComponent::Grab()
 {
 	UE_LOG(LogTemp, Display, TEXT("Grab pressed"))
+	auto OutHit = GetFirstBodyInReach();
+	ComponentToGrab = OutHit.GetComponent();
+	auto HitActor = OutHit.GetActor();
+	
 
 	/// LINE TRACE and see if we reach any actors with physics body collision channel set
 	GetFirstBodyInReach();
-
+	
     // If we hit something attach physics handle
-		
 	// TODO attach a physics handle
+	if(HitActor)
+	{
+		PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(),
+			ComponentToGrab->GetOwner()->GetActorRotation());
+
+	}
 }
 
 void UGrabbingComponent::PhysicsHandleComponent()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle) {
-		UE_LOG(LogTemp, Display, TEXT("%s isn't missing physics handle"), *(GetOwner()->GetName()))
+		UE_LOG(LogTemp, Display, TEXT("Physics Handle is attached to %s"), *(GetOwner()->GetName()))
+		
 	}
 	else
 	{
@@ -95,7 +114,7 @@ const FHitResult UGrabbingComponent::GetFirstBodyInReach()
 		UE_LOG(LogTemp, Warning, TEXT("Line trace hit: %s"), *ActorName);
 	}
 
-	return FHitResult();
+	return Hit;
 }
 
 // Called every frame
@@ -103,6 +122,13 @@ void UGrabbingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//if the physics handle is attached
-		// object starts moving with
+	//if physics handle is attached
+	if (PhysicsHandle->GrabbedComponent)
+	{
+		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
+		LineTraceEndPoint = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
+		PhysicsHandle->SetTargetLocation(LineTraceEndPoint);
+	}
+	//move grabbed object around
+
 }
