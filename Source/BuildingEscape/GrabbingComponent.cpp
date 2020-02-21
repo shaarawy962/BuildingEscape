@@ -36,14 +36,11 @@ void UGrabbingComponent::Release()
 			PhysicsHandle->ReleaseComponent();
 		}
 	}
-
-
 	UE_LOG(LogTemp, Display, TEXT("Grab released"))
 }
 
 void UGrabbingComponent::Grab()
 {
-	UE_LOG(LogTemp, Display, TEXT("Grab pressed"))
 	auto OutHit = GetFirstBodyInReach();
 	ComponentToGrab = OutHit.GetComponent();
 	auto HitActor = OutHit.GetActor();
@@ -53,13 +50,14 @@ void UGrabbingComponent::Grab()
 	GetFirstBodyInReach();
 	
     // If we hit something attach physics handle
-	// TODO attach a physics handle
+	// attach a physics handle
 	if(HitActor)
 	{
 		PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(),
 			ComponentToGrab->GetOwner()->GetActorRotation());
 
 	}
+	UE_LOG(LogTemp, Display, TEXT("Grab pressed"))
 }
 
 void UGrabbingComponent::PhysicsHandleComponent()
@@ -78,21 +76,25 @@ void UGrabbingComponent::PhysicsHandleComponent()
 void UGrabbingComponent::FindInputComponent()
 {
 	Input = GetOwner()->FindComponentByClass<UInputComponent>();
-	if (Input) {
+	if (Input) 
+	{
 		UE_LOG(LogTemp, Display, TEXT("Input is attached to %s"), *(GetOwner()->GetName()))
 			Input->BindAction("Grab", IE_Pressed, this, &UGrabbingComponent::Grab);
 		Input->BindAction("Grab", IE_Released, this, &UGrabbingComponent::Release);
 	}
-	else {
+	else 
+	{
 		UE_LOG(LogTemp, Error, TEXT("Input is missing from %s"), *GetOwner()->GetName())
 	}
 }
 
+//Reaching Body in Maximum reach
 const FHitResult UGrabbingComponent::GetFirstBodyInReach()
 {
 	// Get the player view point
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
 
+	//End of Line trace or the max reach of the pawn's arm
 	LineTraceEndPoint = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 
 	//Setup Query parameters
@@ -101,19 +103,12 @@ const FHitResult UGrabbingComponent::GetFirstBodyInReach()
 	//Line-Trace(AKA Ray-cast) out to reach distance
 	FHitResult Hit;
 
+	//Collision Filtering to a physics body using Line Trace
 	GetWorld()->LineTraceSingleByObjectType(OUT Hit,
 		PlayerViewPointLocation,
 		LineTraceEndPoint,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameter);
-
-	AActor* MyActor = Hit.GetActor();
-
-	if (MyActor) {
-		FString ActorName = MyActor->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Line trace hit: %s"), *ActorName);
-	}
-
 	return Hit;
 }
 
