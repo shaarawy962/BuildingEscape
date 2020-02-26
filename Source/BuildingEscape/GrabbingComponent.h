@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FRotator PlayerViewPointRotation;
 	FVector PlayerViewPointLocation;
-	FVector* LineTraceDirection;
+	FVector* LineTraceDirection = nullptr;
 	FVector LineTraceEndPoint;
 	
 	// Called every frame
